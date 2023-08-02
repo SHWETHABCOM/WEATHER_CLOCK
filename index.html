@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>WEATHER & CLOCK</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="weather">
+            <div class="main">
+                <div class="text">
+                    <input type="text" placeholder="Enter any city..." id="cityinput">
+                </div>
+                <br>
+                <div class="text1">
+                    <input type="submit" value="Submit" id="add" placeholder="submit" id="add">
+                </div>
+                <section class="display">
+                    <div class="wrapper">
+                        <h2 id="cityoutput"></h2>
+                        <p id="description"></p>
+                        <p id="temp"></p>
+                        <p id="wind"></p>
+                    </div>
+                </section>
+            </div>
+            <div class="digitalclock">
+                <h1>WEATHER & <span>CLOCK</span></h1>
+                <h2>Art by<span>Swetha</span></h2>
+                <div class="clockdate">
+                    <div id="clock"></div>
+                    <div id="date"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+        /*       
+       let name=prompt("ENTER YOUR NAME");
+       let welcome=alert("HI"+" "+name+" "+"THIS IS SWETHA"+" "+"YOU'RE WELCOME...");*/
+       var inputval = document.querySelector('#cityinput')
+        var btn = document.querySelector('#add')
+        var city = document.querySelector('#cityoutput')
+        var descrip = document.querySelector('#description')
+        var temp = document.querySelector('#temp')
+        var wind = document.querySelector('#wind')
+        apik = "3045dd712ffe6e702e3245525ac7fa38"
+        function convertion(val) {
+            return (val - 273).toFixed(2)
+        }
+        btn.addEventListener('click', function () {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + inputval.value + '&appid=' + apik)
+                .then(res => res.json())
+                .then(data => {
+                    var nameval = data['name']
+                    var descrip = data['weather']['0']['description']
+                    var tempature = data['main']['temp']
+                    var wndspd = data['wind']['speed']
+                    city.innerHTML = `Weather of<span>${nameval}<span>`
+                    temp.innerHTML = `Temperature  :<span>${convertion(tempature)}C</span>`
+                    description.innerHTML = `Sky Conditions  :<span>${descrip}</span>`
+                    wind.innerHTML = `WindSpeed :<span>${wndspd}km/h<span>`
+                })
+                .catch(err => alert('Please enter a valid City...'))
+
+
+        })
+
+    </script>
+    <script>
+        function startTime() {
+            var today = new Date();
+            var hr = today.getHours();
+            var min = today.getMinutes();
+            var sec = today.getSeconds();
+            ap = (hr < 12) ? "<span>AM</span>" : "<span>PM</span>";
+            hr = (hr == 0) ? 12 : hr;
+            hr = (hr > 12) ? hr - 12 : hr;
+            hr = checkTime(hr);
+            min = checkTime(min);
+            sec = checkTime(sec);
+            document.getElementById("clock").innerHTML = hr + ":" + min + ":" + sec + " " + ap;
+
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'August', 'Septembere', 'October', 'November', 'December'];
+            var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            var curWeekDay = days[today.getDay()];
+            var curDay = today.getDate();
+            var curMonth = months[today.getMonth()];
+            var curYear = today.getFullYear();
+            var date = curWeekDay + "," + curDay + " " + curMonth + " " + curYear;
+            document.getElementById("date").innerHTML = date;
+
+            var time = setTimeout(function () { startTime() }, 500);
+        }
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+
+        }
+
+        startTime();
+</script>
+</body>
+
+</html>
